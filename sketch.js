@@ -6,26 +6,31 @@ window.setup = () => {
   pixelDensity(2.0);
   createCanvas(1280, 720);
 
-  population = new Population(100, 10);
+  population = new Population(1000, 20);
 
-  window.setInterval(() => {
-    population.do_generation();
-  }, 10);
+  textFont('Inconsolata');
+  frameRate(120);
 };
 
 window.draw = () => {
-  background(240);
+  background(250);
 
-  // Do stuff
+  // Play games for score
+  population.play_games(10);
 
   // Draw stuff at the bottom
-  textAlign('left', 'bottom');
-  textSize(24);
-  text('Top 5', 20, height - 160);
-  for (let i = 0; i < 5; i++) {
+
+  for (let i = 0; i < Math.min(100, population.size); i++) {
     push();
-    translate(i * 220 + 20, height - 120);
+    translate((i % 10) * 120 + 30, Math.floor(i / 10) * 110 + 10);
     population.players[i].display();
     pop();
   }
+
+  textSize(24);
+  textAlign('left', 'top');
+  text(`Generation ${population.gen}`, 20, 20);
+
+  // Mutate + reproduce
+  population.do_generation();
 };

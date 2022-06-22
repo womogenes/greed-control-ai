@@ -1,35 +1,44 @@
-import { choice } from './utils.js';
+import { choice, mutate, normalize } from './utils.js';
 
 class Player {
-  constructor(dist) {
-    this.dist = dist;
+  constructor(distr, id) {
+    this.distr = normalize(distr);
     this.score = 0;
+    this.id = id;
   }
 
   copy() {
-    return new Player([...this.dist]);
+    return new Player([...this.distr], this.id);
+  }
+
+  copy_and_mutate() {
+    return new Player(mutate(this.distr), this.id);
   }
 
   choose() {
-    return choice(this.dist);
+    return choice(this.distr);
   }
 
   display() {
-    // Takes up a 200 x 100 area
-    fill('#e38e27');
+    let dimX = 100;
+    let dimY = 100;
+
+    fill('#10a6eb');
     noStroke();
 
-    let n = this.dist.length - 1;
-    let w = 200 / (n + 1); // width
+    let n = this.distr.length - 1;
+    let w = dimX / (n + 1); // width
     for (let i = 0; i <= n; i++) {
-      let h = 100 * this.dist[i];
-      rect(i * w, 100 - h, w, h);
+      let h = dimY * this.distr[i];
+      rect(i * w - 1, dimY - h, w + 1, h);
     }
 
     fill(0);
     textSize(18);
-    textAlign('right', 'bottom');
-    text(`Score: ${this.score.toFixed(2)}`, 200, -10);
+    textAlign('right', 'top');
+    text(`${this.score.toFixed(3)}`, dimX, dimY * 1.1);
+    textAlign('left', 'top');
+    text(this.id, 0, dimY * 1.1);
   }
 }
 
